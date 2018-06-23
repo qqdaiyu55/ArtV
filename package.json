@@ -1,0 +1,38 @@
+{
+  "name": "ArtV",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "buble": "^0.19.3",
+    "electron": "^2.0.2"
+  },
+  "dependencies": {
+    "application-config": "^1.0.1",
+    "arch": "^2.1.1",
+    "axios": "^0.18.0",
+    "debounce": "^1.1.0",
+    "gm": "^1.23.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-infinite-scroller": "^1.1.4",
+    "run-parallel": "^1.1.9",
+    "sharp": "^0.20.4"
+  },
+  "scripts": {
+    "build": "buble src --output build",
+    "clean": "node ./bin/clean.js",
+    "gh-release": "gh-release",
+    "open-config": "node ./bin/open-config.js",
+    "package": "node ./bin/package.js",
+    "prepublish": "npm run build",
+    "start": "npm run build && electron .",
+    "test": "standard && depcheck --ignores=buble,nodemon,gh-release --ignore-dirs=build,dist && node ./bin/extra-lint.js",
+    "test-integration": "npm run build && node ./test",
+    "update-authors": "./bin/update-authors.sh",
+    "watch": "nodemon --exec \"npm run start\" --ext js,css --ignore build/ --ignore dist/"
+  }
+}
