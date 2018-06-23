@@ -28,8 +28,7 @@ function init(state, options) {
     return main.win.show()
   }
 
-  // const initialBounds = Object.assign(config.WINDOW_INITIAL_BOUNDS, state.saved.bounds)
-  const initialBounds = config.WINDOW_INITIAL_BOUNDS
+  const initialBounds = Object.assign(config.WINDOW_INITIAL_BOUNDS, state.saved.bounds)
 
   const win = main.win = new electron.BrowserWindow({
     backgroundColor: '#282828',
@@ -50,15 +49,9 @@ function init(state, options) {
 
   win.loadURL(config.WINDOW_MAIN)
 
-  // win.webContents.openDevTools()
-
   win.once('ready-to-show', () => {
     if (!options.hidden) win.show()
   })
-
-  if (win.setSheetOffset) {
-    win.setSheetOffset(config.UI_HEADER_HEIGHT)
-  }
 
   win.webContents.on('dom-ready', function () {
     menu.onToggleFullScreen(main.win.isFullScreen())
@@ -70,11 +63,11 @@ function init(state, options) {
   //   e.preventDefault()
   // })
 
-  // win.on('blur', onWindowBlur)
-  // win.on('focus', onWindowFocus)
+  win.on('blur', onWindowBlur)
+  win.on('focus', onWindowFocus)
 
-  // win.on('hide', onWindowBlur)
-  // win.on('show', onWindowFocus)
+  win.on('hide', onWindowBlur)
+  win.on('show', onWindowFocus)
 
   // win.on('enter-full-screen', function () {
   //   menu.onToggleFullScreen(true)
@@ -88,13 +81,13 @@ function init(state, options) {
   //   win.setMenuBarVisibility(true)
   // })
 
-  // win.on('move', debounce(function (e) {
-  //   send('windowBoundsChanged', e.sender.getBounds())
-  // }, 1000))
+  win.on('move', debounce(function (e) {
+    send('windowBoundsChanged', e.sender.getBounds())
+  }, 1000))
 
-  // win.on('resize', debounce(function (e) {
-  //   send('windowBoundsChanged', e.sender.getBounds())
-  // }, 1000))
+  win.on('resize', debounce(function (e) {
+    send('windowBoundsChanged', e.sender.getBounds())
+  }, 1000))
 
   // win.on('close', function (e) {
   //   if (process.platform !== 'darwin') {
@@ -117,7 +110,7 @@ function dispatch(...args) {
 
 function hide() {
   if (!main.win) return
-  dispatch('backToList')
+  // dispatch('backToList')
   main.win.hide()
 }
 

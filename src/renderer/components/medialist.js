@@ -8,8 +8,8 @@ class MediaList extends React.Component {
   constructor (props) {
     super(props)
 
-    this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
-    // this.dirPath = '/Users/daiyu/Desktop/test/'
+    // this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
+    this.dirPath = '/Users/daiyu/Desktop/test/'
   }
 
   render () {
@@ -47,11 +47,10 @@ class MediaList extends React.Component {
         //   if (err) throw err
         //   else console.log('create thumbnail for', v)
         // })
-        gm(this.dirPath+v)
+        gm(this.dirPath + v)
           .gravity('Center')
-          .resize(250, 250, '^')
-          .extent(250, 250)
-          // .quality(75)
+          .resize(400, 400, '^')
+          .extent(400, 400)
           .write(thumbPath, function (err) {
             if (err) throw err
             else console.log('create thumbnail for', v)
@@ -65,14 +64,14 @@ class MediaList extends React.Component {
       }
 
       return (
-        <div id={'md-'+i.toString()} className='image'>
+        <div id={'md-'+i.toString()} className='artwork'>
           <img src={thumbPath} />
         </div>
       )
     })
 
     return (
-      <div className='images-wrapper'>
+      <div className='artworks-wrapper'>
         {imageList}
       </div>
     )

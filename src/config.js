@@ -44,8 +44,8 @@ module.exports = {
     width: 900,
     height: 500
   },
-  WINDOW_MIN_HEIGHT: 425,
-  WINDOW_MIN_WIDTH: 425,
+  WINDOW_MIN_HEIGHT: 200,
+  WINDOW_MIN_WIDTH: 300,
 }
 
 function getConfigPath() {

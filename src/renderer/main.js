@@ -2,13 +2,13 @@ console.time('init')
 
 // Perf optimization: Start asynchronously read on config file before all the
 // blocking require() calls below.
-
 const State = require('./lib/state')
 State.load(onState)
 
 const electron = require('electron')
 const React = require('react')
 const ReactDOM = require('react-dom')
+const debounce = require('debounce')
 const fs = require('fs')
 
 const config = require('../config')
@@ -35,8 +35,6 @@ let state
 let app
 
 // Called once when the application loads. (Not once per window.)
-// Connects to the torrent networks, sets up the UI and OS integrations like
-// the dock icon and drag+drop.
 function onState(err, _state) {
   if (err) return onError(err)
 
@@ -62,17 +60,17 @@ function onState(err, _state) {
   // Listen for messages from the main process
   setupIpc()
 
-  // const debouncedFullscreenToggle = debounce(function () {
-  //   dispatch('toggleFullScreen')
-  // }, 1000, true)
+  const debouncedFullscreenToggle = debounce(function () {
+    dispatch('toggleFullScreen')
+  }, 1000, true)
 
-  // document.addEventListener('wheel', function (event) {
-  //   // ctrlKey detects pinch to zoom, http://crbug.com/289887
-  //   if (event.ctrlKey) {
-  //     event.preventDefault()
-  //     debouncedFullscreenToggle()
-  //   }
-  // })
+  document.addEventListener('wheel', function (event) {
+    // ctrlKey detects pinch to zoom, http://crbug.com/289887
+    if (event.ctrlKey) {
+      event.preventDefault()
+      debouncedFullscreenToggle()
+    }
+  })
 
   // ...focus and blur. Needed to show correct dock icon text ('badge') in OSX
   // window.addEventListener('focus', onFocus)
@@ -104,15 +102,39 @@ function updateElectron () {
 }
 
 const dispatchHandlers = {
-  'addSource': () => ipcRenderer.send('addSource'),
+  // Preferences screen
+  'preferences': () => controllers.prefs().show(),
+  'updatePreferences': (key, value) => controllers.prefs().update(key, value),
+  'checkDownloadPath': checkDownloadPath,
 
-  'onOpen': onOpen
+  // Update (check for new versions on Linux, where there's no auto updater)
+  'updateAvailable': (version) => controllers.update().updateAvailable(version),
+  'skipVersion': (version) => controllers.update().skipVersion(version),
+
+  // Navigation between screens (back, forward, ESC, etc)
+  'exitModal': () => { state.modal = null },
+  'backToList': backToList,
+  'escapeBack': escapeBack,
+  'back': () => state.location.back(),
+  'forward': () => state.location.forward(),
+  'cancel': () => state.location.cancel(),
+
+  // Controlling the window
+  'toggleFullScreen': (setTo) => ipcRenderer.send('toggleFullScreen', setTo),
+
+  // Everything else
+  'addSource': () => ipcRenderer.send('addSource'),
+  'error': onError,
+  'uncaughtError': (proc, err) => telemetry.logUncaughtError(proc, err),
+  'stateSave': () => State.save(state),
+  'stateSaveImmediate': () => State.saveImmediate(state),
+  'update': () => { } // No-op, just trigger an update
 }
 
 // Events from the UI never modify state directly. Instead they call dispatch()
 function dispatch(action, ...args) {
   // Log dispatch calls, for debugging, but don't spam
-  if (!['mediaMouseMoved', 'mediaTimeUpdate', 'update'].includes(action)) {
+  if (!['mediaTimeUpdate', 'update'].includes(action)) {
     console.log('dispatch: %s %o', action, args)
   }
 
@@ -165,19 +187,13 @@ function onOpen(selectedPath) {
 
 function onError(err) {
   console.error(err.stack || err)
-  sound.play('ERROR')
+  // sound.play('ERROR')
   state.errors.push({
     time: new Date().getTime(),
     message: err.message || err
   })
 
   update()
-}
-
-const editableHtmlTags = new Set(['input', 'textarea'])
-
-function onPaste(e) {
-  
 }
 
 function onFocus(e) {
@@ -206,10 +222,8 @@ function onFullscreenChanged(e, isFullScreen) {
 }
 
 function onWindowBoundsChanged(e, newBounds) {
-  if (state.location.url() !== 'player') {
-    state.saved.bounds = newBounds
-    dispatch('stateSave')
-  }
+  state.saved.bounds = newBounds
+  dispatch('stateSave')
 }
 
 function checkDownloadPath() {

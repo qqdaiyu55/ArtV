@@ -6,7 +6,6 @@ const app = electron.app
 const parallel = require('run-parallel')
 
 const config = require('../config')
-console.log(config.POSTER_PATH)
 const ipc = require('./ipc')
 const log = require('./log')
 const menu = require('./menu')
@@ -64,16 +63,15 @@ function init() {
   app.isQuitting = false
 
   parallel({
-    appReady: (cb) => app.on('ready', () => cb(null))
-    // state: (cb) => State.load(cb)
+    appReady: (cb) => app.on('ready', () => cb(null)),
+    state: (cb) => State.load(cb)
   }, onReady)
 
   function onReady(err, results) {
     if (err) throw err
 
     isReady = true
-    // const state = results.state
-    const state = {}
+    const state = results.state
 
     windows.main.init(state, { hidden: hidden })
     menu.init()

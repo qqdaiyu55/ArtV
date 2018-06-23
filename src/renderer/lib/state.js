@@ -70,8 +70,6 @@ function getDefaultState() {
 
 /* If the saved state file doesn't exist yet, here's what we use instead */
 function setupStateSaved(cb) {
-  const fs = require('fs')
-
   const saved = {
     prefs: {
       downloadPath: config.DEFAULT_DOWNLOAD_PATH,
@@ -114,23 +112,6 @@ function saveImmediate(state, cb) {
 
   // Clean up, so that we're not saving any pending state
   const copy = Object.assign({}, state.saved)
-  // Remove torrents pending addition to the list, where we haven't finished
-  // reading the torrent file or file(s) to seed & don't have an infohash
-  copy.torrents = copy.torrents
-    .filter((x) => x.infoHash)
-    .map(function (x) {
-      const torrent = {}
-      for (let key in x) {
-        if (key === 'progress' || key === 'torrentKey') {
-          continue // Don't save progress info or key for the webtorrent process
-        }
-        if (key === 'error') {
-          continue // Don't save error states
-        }
-        torrent[key] = x[key]
-      }
-      return torrent
-    })
 
   appConfig.write(copy, (err) => {
     if (err) console.error(err)

@@ -7,8 +7,8 @@ const MediaList = require('../components/medialist')
 
 class Home extends React.Component {
   constructor () {
-    this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
-    // this.dirPath = '/Users/daiyu/Desktop/test/'
+    // this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
+    this.dirPath = '/Users/daiyu/Desktop/test/'
     this.size = 20
 
     this.state = {
