@@ -1,8 +1,10 @@
 const React = require('react')
-
+const Resizable = require('re-resizable')
 
 const SideBar = require('../components/sidebar')
 const Home = require('./home')
+
+const config = require('../../config')
 
 // const Views = {
 //   'home': createGetter(() => TorrentListPage),
@@ -17,6 +19,10 @@ class App extends React.Component {
   render() {
     const state = this.props.state
 
+    const sidebarWidth = state.saved.sidebarWidth
+                          ? state.saved.sidebarWidth
+                          : config.SIDEBAR_INITIAL_WIDTH
+
     // const cls = [
     //   'view-' + state.location.url(), /* e.g. view-home, view-player */
     //   'is-' + process.platform /* e.g. is-darwin, is-win32, is-linux */
@@ -29,7 +35,14 @@ class App extends React.Component {
       <div className={'app'}>
         {/* {this.getErrorPopover()} */}
         {/* <div key='content' className='content'>{this.getView()}</div> */}
-        <SideBar />
+        <Resizable
+          defaultSize={{width: sidebarWidth, height: '100%'}}
+          minWidth={150}
+          maxWidth={250}
+          className='sidebar control'
+        >
+          <SideBar />
+        </Resizable>
         <Home />
         {/* {this.getModal()} */}
       </div>

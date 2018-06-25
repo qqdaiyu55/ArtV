@@ -11,8 +11,6 @@ const ReactDOM = require('react-dom')
 const debounce = require('debounce')
 const fs = require('fs')
 
-const config = require('../config')
-
 const App = require('./pages/app')
 
 // Electron apps have two processes: a main process (node) runs first and starts

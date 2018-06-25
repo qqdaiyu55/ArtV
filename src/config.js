@@ -46,6 +46,7 @@ module.exports = {
   },
   WINDOW_MIN_HEIGHT: 200,
   WINDOW_MIN_WIDTH: 300,
+  SIDEBAR_INITIAL_WIDTH: 180
 }
 
 function getConfigPath() {

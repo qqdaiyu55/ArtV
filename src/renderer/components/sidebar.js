@@ -5,9 +5,7 @@ const { dispatcher } = require('../lib/dispatcher')
 class SideBar extends React.Component {
   render () {
     return (
-      <div className='sidebar'>
-        {this.getAddButton()}
-      </div>
+      <div></div>
     )
   }
 

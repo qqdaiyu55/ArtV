@@ -34,14 +34,16 @@ function init(state, options) {
     backgroundColor: '#282828',
     backgroundThrottling: false, // do not throttle animations/timers when page is background
     darkTheme: true, // Forces dark theme (GTK+3)
-    height: initialBounds.height,
+    // vibrancy: 'ultra-dark',
     icon: getIconPath(), // Window icon (Windows, Linux)
     minHeight: config.WINDOW_MIN_HEIGHT,
     minWidth: config.WINDOW_MIN_WIDTH,
     show: false,
-    title: config.APP_WINDOW_TITLE,
+    // frame: false,
+    // title: config.APP_WINDOW_TITLE,
     titleBarStyle: 'hiddenInset', // Hide title bar (Mac)
     useContentSize: true, // Specify web page size without OS chrome
+    height: initialBounds.height,
     width: initialBounds.width,
     x: initialBounds.x,
     y: initialBounds.y
