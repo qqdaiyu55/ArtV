@@ -91,28 +91,34 @@ body {
  */
 .sidebar {
   float: left;
+  overflow: hidden;
+}
+.sidebar .button-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 35px 10px 5px 20px;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar .button-wrapper > * {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  margin-right: 20%;
+  background-size: cover !important;
+}
+.sidebar .add-source {
+  background: url('plus-circle.svg');
+}
+.sidebar .setting {
+  background: url('settings.svg');
+}
+
+.sidebar .tree {
+  margin: 15px 0 0 22px;
+  font-weight: 200;
   overflow-x: hidden;
   overflow-y: auto;
-}
-.sidebar .toggle {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  left: -20px;
-  top: calc(50% - 20px);
-  background: transparent;
-  border: solid 2px rgb(30, 30, 30);
-  border-radius: 50%;
-  z-index: 1;
-}
-.sidebar .panel {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 200px;
-  height: 100%;
-  background: #bbb;
-  transition: all .5s ease-in-out;
 }
 
 /**
