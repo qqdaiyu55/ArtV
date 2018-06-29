@@ -33,12 +33,6 @@ class SideBar extends React.Component {
     )
   }
 
-  getAddButton () {
-    return (
-      <button onClick={dispatcher('addSource')} />
-    )
-  }
-
   renderNode (node) {
     return (
       <span>

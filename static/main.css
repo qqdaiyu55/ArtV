@@ -125,21 +125,27 @@ body {
  * Content
  */
 .content {
+  position: relative;
   height: 100%;
-  background: #c44;
   overflow-x: hidden;
   overflow-y: auto;
-  line-height: 0;
 }
-.content .artworks-wrapper {
+
+/**
+ * Gallery
+ */
+.gallery {
+  width: 100%;
+}
+.gallery .artworks-wrapper {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
 }
-.content .artwork {
+.gallery .artwork {
   position: relative;
 }
-.content .artwork img {
+.gallery .artwork img {
   object-fit: cover;
   position: absolute;
   top: 0;
@@ -164,4 +170,54 @@ body {
     width: 20%;
     padding-top: 20%;
   }
+}
+
+
+/**
+ * Add Artist Page
+ */
+.add-artist {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display:flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.add-artist .search {
+  position: relative;
+  height: 37px;
+  width: 250px;
+  border: 2px solid rgba(245, 245, 241, 0.1);
+  border-radius: 37px;
+  padding: 0 10px;
+  transition: border .25s ease;
+}
+.add-artist .search:hover {
+  border: 2px solid #e50914;
+}
+.add-artist .search input::-webkit-search-cancel-button {
+  display: none;
+}
+.add-artist .search input {
+  font-weight: 300;
+  font-size: 14px;
+  color: #ffffff;
+  height: 100%;
+  border: none;
+  background: transparent;
+  appearance: none;
+  outline: none;
+}
+.add-artist .search .open-folder {
+  cursor: pointer;
+  position: absolute;
+  right: 7px;
+  width: 18px;
+  height: 18px;
+  background: url('folder.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }

@@ -8,8 +8,8 @@ class MediaList extends React.Component {
   constructor (props) {
     super(props)
 
-    // this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
-    this.dirPath = '/Users/daiyu/Desktop/test/'
+    this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
+    // this.dirPath = '/Users/daiyu/Desktop/test/'
   }
 
   render () {
@@ -28,7 +28,7 @@ class MediaList extends React.Component {
 
       return (
         <div id={'md-'+i.toString()} className='artwork'>
-          <img src={thumbPath} />
+          <img longdesc={thumbPath} src={thumbPath} onError={this.reloadImg}/>
         </div>
       )
     })
@@ -38,6 +38,17 @@ class MediaList extends React.Component {
         {imageList}
       </div>
     )
+  }
+
+  // Trick to reload image: https://stackoverflow.com/questions/1077041/refresh-image-with-a-new-one-at-the-same-url
+  reloadImg(e) {
+    // If you want to access the event properties in an asynchronous way, 
+    // you should call event.persist() on the event.
+    // see https://reactjs.org/docs/events.html#event-pooling
+    e.persist()
+    setTimeout(() => {
+      e.target.src = e.target.longDesc + '#' + new Date().getTime()
+    }, 500)
   }
 }
 

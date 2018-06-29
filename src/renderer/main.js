@@ -121,7 +121,7 @@ const dispatchHandlers = {
   'toggleFullScreen': (setTo) => ipcRenderer.send('toggleFullScreen', setTo),
 
   // Everything else
-  'addSource': () => ipcRenderer.send('addSource'),
+  'openFolder': () => ipcRenderer.send('openFolder'),
   'error': onError,
   'uncaughtError': (proc, err) => telemetry.logUncaughtError(proc, err),
   'stateSave': () => State.save(state),

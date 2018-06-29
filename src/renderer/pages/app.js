@@ -2,7 +2,8 @@ const React = require('react')
 const Resizable = require('re-resizable')
 
 const SideBar = require('../components/sidebar')
-const Home = require('./home')
+const Gallery = require('./gallery')
+const AddArtist = require('./add-artist')
 
 const config = require('../../config')
 
@@ -32,7 +33,7 @@ class App extends React.Component {
 
     return (
       // <div className={'app ' + cls.join(' ')}>
-      <div className={'app'}>
+      <div className='app'>
         {/* {this.getErrorPopover()} */}
         {/* <div key='content' className='content'>{this.getView()}</div> */}
         <Resizable
@@ -43,7 +44,9 @@ class App extends React.Component {
         >
           <SideBar />
         </Resizable>
-        <Home />
+        <div className='content'>
+          <AddArtist />
+        </div>
         {/* {this.getModal()} */}
       </div>
     )

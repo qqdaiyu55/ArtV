@@ -5,10 +5,10 @@ const path = require('path')
 
 const MediaList = require('../components/medialist')
 
-class Home extends React.Component {
+class Gallery extends React.Component {
   constructor () {
-    // this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
-    this.dirPath = '/Users/daiyu/Desktop/test/'
+    this.dirPath = '/Users/daiyu/Desktop/The Art of Overwatch (2017) (Digital)/'
+    // this.dirPath = '/Users/daiyu/Desktop/test/'
     this.size = 20
 
     this.state = {
@@ -26,7 +26,7 @@ class Home extends React.Component {
     const loader = <div className="loader-inner line-scale scroll-loader"></div>
 
     return (
-      <div className='content'>
+      <div className='gallery'>
         <InfiniteScroll
           pageStart={0}
           loadMore={this.loadContent}
@@ -75,4 +75,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home
+module.exports = Gallery

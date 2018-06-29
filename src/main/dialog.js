@@ -1,5 +1,5 @@
 module.exports = {
-  addSource
+  openFolder
 }
 
 const electron = require('electron')
@@ -12,7 +12,7 @@ const windows = require('./windows')
  * Show flexible open dialog that supports selecting .torrent files to add, or
  * a file or folder to create a single-file or single-directory torrent.
  */
-function addSource() {
+function openFolder() {
   if (!windows.main.win) return
   // log('openFiles')
   const opts = {

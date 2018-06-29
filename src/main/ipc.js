@@ -30,9 +30,9 @@ function init() {
   /**
    * Dialog
    */
-  ipc.on('addSource', () => {
+  ipc.on('openFolder', () => {
     const dialog = require('./dialog')
-    dialog.addSource()
+    dialog.openFolder()
   })
 
   /**
