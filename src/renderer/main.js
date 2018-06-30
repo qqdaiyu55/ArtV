@@ -10,6 +10,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 const debounce = require('debounce')
 const fs = require('fs')
+const path = require('path')
 
 const App = require('./pages/app')
 
@@ -122,6 +123,7 @@ const dispatchHandlers = {
 
   // Everything else
   'openFolder': () => ipcRenderer.send('openFolder'),
+  'onOpen': onOpen,
   'error': onError,
   'uncaughtError': (proc, err) => telemetry.logUncaughtError(proc, err),
   'stateSave': () => State.save(state),
@@ -181,6 +183,16 @@ function escapeBack() {
 }
 
 function onOpen(selectedPath) {
+  let folderPath = selectedPath[0]
+  let artistTree = state.saved.artistTree
+  let newArtist = {
+    'module': path.basename(folderPath),
+    'leaf': true,
+    'path': folderPath
+  }
+  artistTree.children.push(newArtist)
+
+  update()
 }
 
 function onError(err) {

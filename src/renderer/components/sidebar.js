@@ -1,20 +1,12 @@
 const React = require('react')
 const Tree = require('react-ui-tree')
+const cx = require('classnames')
 
 const { dispatcher } = require('../lib/dispatcher')
 
 class SideBar extends React.Component {
   render () {
-    const tree = {
-      "module": "react-ui-tree",
-      "children": [{
-        "collapsed": true,
-        "module": "dist",
-        "children": [{
-          "module": "node.js"
-        }]
-      }]
-    }
+    const artistTree = this.props.state.saved.artistTree
 
     return (
       <div>
@@ -25,7 +17,7 @@ class SideBar extends React.Component {
         <div className='tree'>
           <Tree
             paddingLeft={15}
-            tree={tree}
+            tree={artistTree}
             renderNode={this.renderNode}
           />
         </div>
@@ -39,6 +31,12 @@ class SideBar extends React.Component {
         {node.module}
       </span>
     )
+  }
+
+  onClickNode (node) {
+    this.setState({
+      active: node
+    })
   }
 }
 

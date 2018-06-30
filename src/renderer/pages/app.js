@@ -42,7 +42,7 @@ class App extends React.Component {
           maxWidth={250}
           className='sidebar control'
         >
-          <SideBar />
+          <SideBar state={state}/>
         </Resizable>
         <div className='content'>
           <AddArtist />

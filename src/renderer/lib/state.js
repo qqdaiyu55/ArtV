@@ -75,7 +75,12 @@ function setupStateSaved(cb) {
       downloadPath: config.DEFAULT_DOWNLOAD_PATH,
       startup: false
     },
-    version: config.APP_VERSION /* make sure we can upgrade gracefully later */
+    version: config.APP_VERSION, /* make sure we can upgrade gracefully later */
+    artistTree: {
+      "module": "",
+      "children": [],
+      "collapsed": false
+    }
   }
   
   cb(null, saved)

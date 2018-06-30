@@ -14,14 +14,12 @@ const windows = require('./windows')
  */
 function openFolder() {
   if (!windows.main.win) return
-  // log('openFiles')
+  log('open folder')
   const opts = {
     title: 'Select a folder to add.',
     properties: ['openDirectory']
   }
-  // setTitle(opts.title)
   electron.dialog.showOpenDialog(windows.main.win, opts, function (selectedPath) {
-    // resetTitle()
     if (!Array.isArray(selectedPath)) return
     windows.main.dispatch('onOpen', selectedPath)
   })
