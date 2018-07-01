@@ -184,15 +184,14 @@ function escapeBack() {
 
 function onOpen(selectedPath) {
   let folderPath = selectedPath[0]
-  let artistTree = state.saved.artistTree
   let newArtist = {
     'module': path.basename(folderPath),
     'leaf': true,
     'path': folderPath
   }
-  artistTree.children.push(newArtist)
+  state.saved.artistTree.children.push(newArtist)
 
-  update()
+  dispatch('stateSave')
 }
 
 function onError(err) {

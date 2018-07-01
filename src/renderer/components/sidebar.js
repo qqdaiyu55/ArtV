@@ -1,10 +1,20 @@
 const React = require('react')
 const Tree = require('react-ui-tree')
 const cx = require('classnames')
-
-const { dispatcher } = require('../lib/dispatcher')
+const {
+  withRouter
+} = require('react-router-dom')
 
 class SideBar extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.active = null
+
+    this.onClickNode = this.onClickNode.bind(this)
+    this.renderNode = this.renderNode.bind(this)
+  }
+
   render () {
     const artistTree = this.props.state.saved.artistTree
 
@@ -17,6 +27,7 @@ class SideBar extends React.Component {
         <div className='tree'>
           <Tree
             paddingLeft={15}
+            isNodeCollapsed={this.isNodeCollapsed}
             tree={artistTree}
             renderNode={this.renderNode}
           />
@@ -27,17 +38,21 @@ class SideBar extends React.Component {
 
   renderNode (node) {
     return (
-      <span>
+      <span
+        className={cx('node', {
+          'is-active': node === this.active
+        })}
+        onClick={this.onClickNode}
+      >
         {node.module}
       </span>
     )
   }
 
   onClickNode (node) {
-    this.setState({
-      active: node
-    })
+    this.active = node
+    this.props.history.push('/gallery')
   }
 }
 
-module.exports = SideBar
+module.exports = withRouter(SideBar)

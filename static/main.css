@@ -91,7 +91,7 @@ body {
  */
 .sidebar {
   float: left;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .sidebar .button-wrapper {
   display: flex;
@@ -114,12 +114,57 @@ body {
   background: url('settings.svg');
 }
 
-.sidebar .tree {
+.tree {
+  position: relative;
+  width: 300px;
   margin: 15px 0 0 22px;
   font-weight: 200;
   overflow-x: hidden;
   overflow-y: auto;
 }
+.f-no-select, .m-tree {
+  user-select: none;
+}
+.m-draggable{
+  position: absolute;
+  opacity: .8;
+  user-select: none;
+}
+.m-node.placeholder > * {
+  visibility: hidden;
+}
+.m-node.placeholder {
+  border: 1px dashed #ccc;
+}
+.m-node .inner {
+  position: relative;
+  cursor: pointer;
+  padding-left: 10px;
+  color: #9da5b4;
+  font-size: 12px;
+  font-family: Menlo;
+}
+.m-node .collapse {
+  position: absolute;
+  left: 0;
+  cursor: pointer;
+}
+.m-node .caret-right:before {
+  content: "\25B8";
+}
+.m-node .caret-down:before{
+  content: "\25BE";
+}
+.m-node .node {
+  display: inline-block;
+  width: 100%;
+  padding: 4px 5px;
+}
+.m-node .node.is-active {
+  background-color:#31363f;
+}
+
+
 
 /**
  * Content
