@@ -57,7 +57,7 @@ class App extends React.Component {
           }}
           className='sidebar control'
         >
-          <SideBar state={state}/>
+          <SideBar artistTree={state.saved.artistTree}/>
         </Resizable>
         </HashRouter>
         <div className='content'>
@@ -70,7 +70,7 @@ class App extends React.Component {
           <HashRouter>
             <Switch>
               <Route exact path='/' component={AddArtist} />
-              <Route path='/gallery' component={Gallery} />
+              <Route path='/gallery/:id' component={Gallery} />
             </Switch>
           </HashRouter>
         </div>

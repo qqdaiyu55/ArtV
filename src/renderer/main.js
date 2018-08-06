@@ -11,6 +11,7 @@ const ReactDOM = require('react-dom')
 const debounce = require('debounce')
 const fs = require('fs')
 const path = require('path')
+const crypto = require("crypto")
 
 const App = require('./pages/app')
 
@@ -184,7 +185,10 @@ function escapeBack() {
 
 function onOpen(selectedPath) {
   let folderPath = selectedPath[0]
+  // Generate 16-char unique id
+  let uuid = crypto.randomBytes(8).toString('hex')
   let newArtist = {
+    'id': uuid,
     'module': path.basename(folderPath),
     'leaf': true,
     'path': folderPath

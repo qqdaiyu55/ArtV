@@ -16,8 +16,6 @@ class SideBar extends React.Component {
   }
 
   render () {
-    const artistTree = this.props.state.saved.artistTree
-
     return (
       <div>
         <div className='button-wrapper'>
@@ -28,7 +26,7 @@ class SideBar extends React.Component {
           <Tree
             paddingLeft={15}
             isNodeCollapsed={this.isNodeCollapsed}
-            tree={artistTree}
+            tree={this.props.artistTree}
             renderNode={this.renderNode}
           />
         </div>
@@ -43,6 +41,8 @@ class SideBar extends React.Component {
           'is-active': node === this.active
         })}
         onClick={this.onClickNode}
+        id={node.id}
+        data-artist={JSON.stringify(node)}
       >
         {node.module}
       </span>
@@ -51,7 +51,7 @@ class SideBar extends React.Component {
 
   onClickNode (node) {
     this.active = node
-    this.props.history.push('/gallery')
+    this.props.history.push('/gallery/'+node.target.id)
   }
 }
 

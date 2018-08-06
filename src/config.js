@@ -24,6 +24,7 @@ module.exports = {
   APP_WINDOW_TITLE: APP_NAME,
 
   CONFIG_PATH: getConfigPath(),
+  THUMBNAIL_PATH: path.join(getConfigPath(), 'Thumbnail'),
 
   DEFAULT_DOWNLOAD_PATH: getDefaultDownloadPath(),
 
@@ -33,7 +34,6 @@ module.exports = {
 
   OS_SYSARCH: arch() === 'x64' ? 'x64' : 'ia32',
 
-  THUMBNAIL_PATH: path.join(getConfigPath(), 'Thumbnail'),
   ROOT_PATH: path.join(__dirname, '..'),
   STATIC_PATH: path.join(__dirname, '..', 'static'),
 
