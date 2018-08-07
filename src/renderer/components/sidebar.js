@@ -1,9 +1,6 @@
 const React = require('react')
-const Tree = require('react-ui-tree')
-const cx = require('classnames')
-const {
-  withRouter
-} = require('react-router-dom')
+
+const ArtistTree = require('./artist-tree')
 
 class SideBar extends React.Component {
   constructor (props) {
@@ -12,7 +9,6 @@ class SideBar extends React.Component {
     this.active = null
 
     this.onClickNode = this.onClickNode.bind(this)
-    this.renderNode = this.renderNode.bind(this)
   }
 
   render () {
@@ -23,29 +19,9 @@ class SideBar extends React.Component {
           <span className='setting'></span>
         </div>
         <div className='tree'>
-          <Tree
-            paddingLeft={15}
-            isNodeCollapsed={this.isNodeCollapsed}
-            tree={this.props.artistTree}
-            renderNode={this.renderNode}
-          />
+          <ArtistTree />
         </div>
       </div>
-    )
-  }
-
-  renderNode (node) {
-    return (
-      <span
-        className={cx('node', {
-          'is-active': node === this.active
-        })}
-        onClick={this.onClickNode}
-        id={node.id}
-        data-artist={JSON.stringify(node)}
-      >
-        {node.module}
-      </span>
     )
   }
 
@@ -55,4 +31,4 @@ class SideBar extends React.Component {
   }
 }
 
-module.exports = withRouter(SideBar)
+module.exports = SideBar

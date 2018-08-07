@@ -57,7 +57,7 @@ class App extends React.Component {
           }}
           className='sidebar control'
         >
-          <SideBar artistTree={state.saved.artistTree}/>
+          <SideBar data={state.saved.artistTree}/>
         </Resizable>
         </HashRouter>
         <div className='content'>
