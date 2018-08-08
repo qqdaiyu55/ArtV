@@ -2,8 +2,6 @@ const React = require('react')
 const Resizable = require('re-resizable')
 const {
   HashRouter,
-  Router,
-  browserHistory,
   Switch,
   Route
 } = require('react-router-dom')
@@ -61,12 +59,6 @@ class App extends React.Component {
         </Resizable>
         </HashRouter>
         <div className='content'>
-          {/* <Router history={browserHistory}>
-            <Switch>
-              <Route exact path='/' component={AddArtist} />
-              <Route path='/gallery' component={Gallery} />
-            </Switch>
-          </Router> */}
           <HashRouter>
             <Switch>
               <Route exact path='/' component={AddArtist} />

@@ -188,12 +188,12 @@ function onOpen(selectedPath) {
   // Generate 16-char unique id
   let uuid = crypto.randomBytes(8).toString('hex')
   let newArtist = {
-    'id': uuid,
-    'module': path.basename(folderPath),
-    'leaf': true,
-    'path': folderPath
+    key: uuid,
+    title: path.basename(folderPath),
+    type: 'local',
+    path: folderPath
   }
-  state.saved.artistTree.children.push(newArtist)
+  state.saved.artistTree.push(newArtist)
 
   dispatch('stateSave')
 }

@@ -5,10 +5,10 @@
   color: white;
 }
 .rc-tree .parent-node .rc-tree-title {
-  font-size: 20px;
+  font-size: 18px;
 }
 .rc-tree .leaf-node .rc-tree-title {
-  font-size: 15px;
+  font-size: 18px;
 }
 .rc-tree li {
   list-style: none;
@@ -18,15 +18,16 @@
   cursor: default;
   user-select: none;
 }
-.rc-tree li.drag-over > .draggable {
-  border: 1px white dashed;
-  opacity: 0.8;
+.rc-tree li.drag-over.parent-node > .draggable {
+  opacity: .6;
 }
 .rc-tree li.drag-over-gap-top > .draggable {
-  border-top: 2px white dashed;
+  margin-top: 12px;
+  transition: all .15s ease-in-out;
 }
 .rc-tree li.drag-over-gap-bottom > .draggable {
-  border-bottom: 2px white dashed;
+  margin-bottom: 12px;
+  transition: all .15s ease-in-out;
 }
 .rc-tree li ul {
   margin: 0;

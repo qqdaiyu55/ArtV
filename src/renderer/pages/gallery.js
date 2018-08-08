@@ -8,7 +8,9 @@ const config = require('../../config')
 const MediaList = require('../components/medialist')
 
 class Gallery extends React.Component {
-  constructor () {
+  constructor (props) {
+    super(props)
+
     this.size = 20
 
     this.state = {
@@ -20,6 +22,7 @@ class Gallery extends React.Component {
       start: 0
     }
 
+    this.init = this.init.bind(this)
     this.getMediaList = this.getMediaList.bind(this)
     this.createThumbnail = this.createThumbnail.bind(this)
     this.loadContent = this.loadContent.bind(this)
@@ -68,7 +71,8 @@ class Gallery extends React.Component {
   }
 
   componentWillMount () {
-    console.log('will ummount')
+    console.log('will mount')
+    console.log(this.props)
     
     // get Artist id, which is also the element id on side tree
     const artistId = this.props.match.params.id
@@ -77,8 +81,25 @@ class Gallery extends React.Component {
   }
 
   init (artistId) {
-    const data = JSON.parse(document.getElementById(artistId).getAttribute('data-artist'))
-    const imgPath = data.path
+    const loop = (data, key, callback) => {
+      data.forEach((item, index, arr) => {
+        if (item.key === key) {
+          return callback(item, index, arr)
+        }
+        if (item.children) {
+          return loop(item.children, key, callback)
+        }
+      })
+    }
+
+    const data = JSON.parse(document.getElementById('data-artists').getAttribute('data-artists'))
+    let artistData
+
+    loop(data, artistId, (item, index, arr) => {
+      artistData = item
+    })
+
+    const imgPath = artistData.path
     const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
 
     // Check if the thumbnail folder exists

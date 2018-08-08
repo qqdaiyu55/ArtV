@@ -1,4 +1,5 @@
 const React = require('react')
+const { withRouter } = require('react-router-dom')
 
 const ArtistTree = require('./artist-tree')
 
@@ -8,27 +9,28 @@ class SideBar extends React.Component {
 
     this.active = null
 
-    this.onClickNode = this.onClickNode.bind(this)
+    this.onClickAddSource = this.onClickAddSource.bind(this)
   }
 
   render () {
     return (
       <div>
         <div className='button-wrapper'>
-          <span className='add-source'></span>
+          <span className='add-source' onClick={this.onClickAddSource}></span>
           <span className='setting'></span>
         </div>
         <div className='tree'>
-          <ArtistTree />
+          <ArtistTree data={this.props.data} />
         </div>
       </div>
     )
   }
 
-  onClickNode (node) {
-    this.active = node
-    this.props.history.push('/gallery/'+node.target.id)
+  onClickAddSource () {
+    if (this.props.location.pathname != '/') {
+      this.props.history.push('/')
+    }
   }
 }
 
-module.exports = SideBar
+module.exports = withRouter(SideBar)

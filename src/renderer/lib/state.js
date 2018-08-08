@@ -76,11 +76,13 @@ function setupStateSaved(cb) {
       startup: false
     },
     version: config.APP_VERSION, /* make sure we can upgrade gracefully later */
-    artistTree: {
-      "module": "",
-      "children": [],
-      "collapsed": false
-    }
+    artistTree: [
+      {
+        title: 'Favorite',
+        key: 'favorite',
+        isLeaf: true
+      }
+    ]
   }
   
   cb(null, saved)

@@ -3,16 +3,28 @@ const { withRouter } = require('react-router-dom')
 const Tree = require('rc-tree').default
 const { TreeNode } = require('rc-tree')
 
+const ContextMenu = require('./context-menu')
+
 class ArtistTree extends React.Component {
-  constructor () {
+  constructor (props) {
     this.state = {
-      gData: [{ title: 'test', key: 'test-key', children: [{ title: 'child1', key: 'child-1'}, { title: 'child2', key: 'child-2' }]}, { title: 'Overwatch', key: 'test-key-2', children: [{title:'wlop', key:'ow-1'}]}],
-      expandedKeys: ['test-key']
+      gData: props.data,
+      expandedKeys: [],
+
+      contextMenuInfo: {
+        display: false,
+        pageX: 0,
+        pageY: 0,
+        key: undefined,
+        title: undefined
+      }
     }
 
+    this.onDragEnter = this.onDragEnter.bind(this)
     this.onDrop = this.onDrop.bind(this)
     this.collaspse = this.collaspse.bind(this)
     this.onSelect = this.onSelect.bind(this)
+    this.onRightClick = this.onRightClick.bind(this)
   } 
 
   render () {
@@ -25,17 +37,34 @@ class ArtistTree extends React.Component {
       })
     }
 
+    const contextMenuInfo = this.state.contextMenuInfo
+
     return (
-      <Tree
-        expandedKeys={this.state.expandedKeys}
-        defaultExpandParent={true}
-        draggable={true}
-        onDrop={this.onDrop}
-        onSelect={this.onSelect}
-      >
+      <div>
+        <Tree
+          expandedKeys={this.state.expandedKeys}
+          defaultExpandParent={true}
+          draggable={true}
+          onDragEnter={this.onDragEnter}
+          onDrop={this.onDrop}
+          onSelect={this.onSelect}
+          onRightClick={this.onRightClick}
+        >
         {loop(this.state.gData)}
-      </Tree>
+        </Tree>
+        <ContextMenu
+          show={contextMenuInfo.display}
+          pageX={contextMenuInfo.pageX}
+          pageY={contextMenuInfo.pageY}
+          title={contextMenuInfo.title}
+        />
+        <div id='data-artists' data-artists={JSON.stringify(this.state.gData)} style={{display: 'None'}}></div>
+      </div>
     )
+  }
+
+  onDragEnter (info) {
+    this.collaspse(info.node.props.eventKey, true)
   }
 
   onDrop (info) {
@@ -95,13 +124,13 @@ class ArtistTree extends React.Component {
     this.setState({ gData: data })
   }
 
-  collaspse (selectedKey) {
+  collaspse (selectedKey, alwaysExpand=false) {
     let expandedKeys = [...this.state.expandedKeys]
 
-    if (expandedKeys.includes(selectedKey)) {
-      expandedKeys.splice(expandedKeys.indexOf(selectedKey), 1)
-    } else {
+    if (!expandedKeys.includes(selectedKey)) {
       expandedKeys.push(selectedKey)
+    } else if (!alwaysExpand) {
+      expandedKeys.splice(expandedKeys.indexOf(selectedKey), 1)
     }
 
     this.setState({
@@ -109,10 +138,28 @@ class ArtistTree extends React.Component {
     })
   }
 
+  // Click the node:
+  //  1. for parent node (collection): expand the collection or not
+  //  2. for leaf node (artist): jump to artist page
   onSelect (selectedKey, e) {
     if (!e.node.isLeaf()) {
       this.collaspse(e.node.props.eventKey)
+    } else {
+      this.props.history.push('/gallery/' + e.node.props.eventKey)
     }
+  }
+
+  // Right click to pop out context menu
+  onRightClick (info) {
+    this.setState({
+      contextMenuInfo: {
+        display: true,
+        pageX: info.event.pageX,
+        pageY: info.event.pageY,
+        key: info.node.props.eventKey,
+        title: info.node.props.title
+      }
+    })
   }
 }
 

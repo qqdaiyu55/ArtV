@@ -15,7 +15,6 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow: hidden;
 }
 
 .app {
@@ -101,7 +100,6 @@ body {
   justify-content: center;
 }
 .sidebar .button-wrapper > * {
-  cursor: pointer;
   width: 25px;
   height: 25px;
   margin-right: 20%;
@@ -119,8 +117,6 @@ body {
   width: 300px;
   margin: 15px 0 0 22px;
   font-weight: 200;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
 
@@ -240,4 +236,24 @@ body {
   background: url('folder.svg');
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.search-results {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display:flex;
+  flex-wrap: wrap;
+}
+.search-results .artist-info {
+
+}
+.search-results .avatar img {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+
+}
+.search-results .name {
+  
 }
