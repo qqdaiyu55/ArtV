@@ -7,14 +7,13 @@ class MediaList extends React.Component {
   }
 
   render () {
-    const folderPath = this.props.folderPath
     let thumbnailList =  this.props.data
 
     thumbnailList = thumbnailList.map((v, i) => {
       return (
-        <div id={'thumbnail-id-'+i.toString()} className='artwork'>
+        <div key={'thumbnail-'+i.toString()} className='artwork'>
           <div className='overlay'></div>
-          <img src={path.join(folderPath, v.toString())} />
+          <img src={v} />
         </div>
       )
     })

@@ -2,6 +2,7 @@ const React = require('react')
 const InfiniteScroll = require('react-infinite-scroller')
 const fs = require('fs')
 const path = require('path')
+const axios = require('axios')
 const sharp = require('sharp')
 
 const config = require('../../config')
@@ -11,20 +12,32 @@ class Gallery extends React.Component {
   constructor (props) {
     super(props)
 
-    this.size = 20
-
-    this.state = {
+    this.size = 30
+    this.initState = {
       type: undefined,
+
       thumbnailNum: 0,
       imageNum: -1,
-      images: [],
+
       showedImages: [],
       hasMoreItems: false,
-      start: 0
+
+      // for local images
+      images: [],
+      start: 0,
+
+      // for artstation
+      page: 1,
+
+      artistInfo: {}
     }
 
+    this.artstationProcjetUrl = 'https://www.artstation.com/users/username/projects.json'
+
+    this.state = this.initState
+
     this.init = this.init.bind(this)
-    this.getMediaList = this.getMediaList.bind(this)
+    this.getLocalMediaList = this.getLocalMediaList.bind(this)
     this.createThumbnail = this.createThumbnail.bind(this)
     this.loadContent = this.loadContent.bind(this)
   }
@@ -33,39 +46,51 @@ class Gallery extends React.Component {
     // Set loader for infinite scroll component
     const loader = <div className="loader-inner line-scale scroll-loader"></div>
 
-    const artistId = this.props.match.params.id
-    const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
+    const MediaListWrapper = 
+      <div className='gallery'>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.loadContent}
+          hasMore={this.state.hasMoreItems}
+          loader={loader}
+          useWindow={false}
+        >
+          <MediaList data={this.state.showedImages} />
+        </InfiniteScroll>
+      </div>
+    
+    let wrapper
+    if (this.state.type == 'local') {
+      wrapper =
+        this.state.thumbnailNum == this.state.imageNum
+          ? MediaListWrapper
+          : <h1>{this.state.thumbnailNum}</h1>
+    }
+    if (this.state.type == 'artstation') {
+      console.log('artstation', this.state.artistInfo)
+      const data = this.state.artistInfo
 
-    return (
-      this.state.thumbnailNum == this.state.imageNum
-        ? <div className='gallery'>
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={this.loadContent}
-              hasMore={this.state.hasMoreItems}
-              loader={loader}
-              useWindow={false}
-            >
-              <MediaList data={this.state.showedImages} folderPath={thumbFolderPath} />
-            </InfiniteScroll>
+      wrapper = 
+        <div>
+          <div className='artist-masthead' style={{backgroundImage: 'url('+data.coverUrl+')'}}>
+            <div className='artist-info'>
+              <div className='avatar'>
+                <img src={data.avatarUrl} />
+              </div>
+            </div>
           </div>
-        : <h1>{this.state.thumbnailNum}</h1>
-    )
+          {MediaListWrapper}
+        </div>
+    }
+
+    return wrapper
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps.match.params.id)
     if (this.props.match.params.id != nextProps.match.params.id) {
       const artistId = nextProps.match.params.id
 
-      this.setState({
-        thumbnailNum: 0,
-        imageNum: -1,
-        images: [],
-        showedImages: [],
-        hasMoreItems: false,
-        start: 0
-      })
+      this.setState(this.initState)
 
       this.init(artistId)
     }
@@ -73,7 +98,6 @@ class Gallery extends React.Component {
 
   componentWillMount () {
     console.log('will mount')
-    console.log(this.props)
     
     // get Artist id, which is also the element id on side tree
     const artistId = this.props.match.params.id
@@ -101,8 +125,9 @@ class Gallery extends React.Component {
       artistData = item
     })
 
-    // Cases: local, artstation, pixiv
-    if (item.type == 'local') {
+    this.setState({ type: artistData.type })
+
+    if (artistData.type == 'local') {
       const imgPath = artistData.path
       const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
 
@@ -111,20 +136,40 @@ class Gallery extends React.Component {
         fs.mkdirSync(thumbFolderPath)
       }
 
-      const mediaList = this.getMediaList(imgPath)
+      const mediaList = this.getLocalMediaList(imgPath)
 
-      this.createThumbnail(mediaList, imgPath, thumbFolderPath)
+      this.createThumbnail(mediaList, thumbFolderPath)
     }
-    if (item.type == 'artstation') {
 
+    if (artistData.type == 'artstation') {
+      axios.get(artistData.userInfoUrl)
+        .then((resp) => {
+          this.setState({
+            hasMoreItems: true,
+            artistInfo: {
+              name: resp.data.full_name,
+              avatarUrl: resp.data.large_avatar_url,
+              coverUrl: resp.data.default_cover_url,
+              headline: resp.data.headline,
+              city: resp.data.city,
+              country: resp.data.country,
+              username: resp.data.username
+            }
+          })
+        })
     }
   }
 
-  getMediaList (dirPath) {
+  // Case: local
+  // Get images list of the selected folder
+  getLocalMediaList (dirPath) {
     const exts = ['jpg', 'jpeg', 'gif', 'png', 'tiff', 'gif', 'bmp']
 
     let files = fs.readdirSync(dirPath)
     let images = files.filter(file => exts.includes(path.extname(file).replace('.', '')))
+    images = images.map((v, i) => {
+      return path.join(dirPath, v)
+    })
     let hasMoreItems = images.length > 0 ? true : false
 
     this.setState({
@@ -136,7 +181,9 @@ class Gallery extends React.Component {
     return images
   }
 
-  createThumbnail (mediaList, imgPath, thumbFolderPath) {
+  // Case: local
+  // Create thumbnails for local images
+  createThumbnail (mediaList, thumbFolderPath) {
     // List for images whose thumbnails do not exist in the thumbnail folder
     let missingList = []
 
@@ -155,7 +202,7 @@ class Gallery extends React.Component {
         let thumbFilePath = path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v))
 
         // Use `sharp` to generate thumbnail
-        sharp(path.join(imgPath, v))
+        sharp(v)
           .resize(400, 400)
           .toFile(thumbFilePath, (err, info) => {
             if (err) throw err
@@ -173,22 +220,54 @@ class Gallery extends React.Component {
   }
   
   loadContent () {
-    if (this.state.start >= this.state.imageNum) {
-      this.setState({ hasMoreItems: false })
-    } else {
-      let showedImages = this.state.showedImages
-      let start = this.state.start
-      let moreImages = this.state.images.slice(start, start + this.size)
+    if (this.state.type == 'local') {
+      const artistId = this.props.match.params.id
+      const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
 
-      moreImages = moreImages.map((v) => {
-        return path.parse(v).name + '_thumb' + path.extname(v)
-      })
+      if (this.state.start >= this.state.imageNum) {
+        this.setState({ hasMoreItems: false })
+      } else {
+        let showedImages = [...this.state.showedImages]
+        let start = this.state.start
+        let moreImages = this.state.images.slice(start, start + this.size)
 
-      showedImages = showedImages.concat(moreImages)
-      this.setState({
-        showedImages: showedImages,
-        start: start + this.size
-      })
+        moreImages = moreImages.map((v) => {
+          return path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v))
+        })
+
+        showedImages = showedImages.concat(moreImages)
+        this.setState({
+          showedImages: showedImages,
+          start: start + this.size
+        })
+      }
+    }
+
+    if (this.state.type == 'artstation') {
+      console.log('load artstation content')
+      const artistProjectUrl = this.artstationProcjetUrl.replace('username', this.state.artistInfo.username) + '?page=' + this.state.page.toString()
+
+      axios.get(artistProjectUrl)
+        .then((resp) => {
+          console.log(artistProjectUrl, resp.data)
+          if (resp.data.data.length != 0) {
+            let showedImages = [...this.state.showedImages]
+            let moreImages = resp.data.data
+
+            moreImages = moreImages.map((v) => {
+              return v.cover.thumb_url
+            })
+
+            showedImages = showedImages.concat(moreImages)
+            let page = this.state.page + 1
+            this.setState({
+              showedImages,
+              page
+            })
+          } else {
+            this.setState({ hasMoreItems: false })
+          }
+        })
     }
   }
 }

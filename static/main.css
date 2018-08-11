@@ -132,6 +132,25 @@ body {
 }
 
 /**
+ * Artist Masthead
+ */
+.artist-masthead {
+  width: 100%;
+  height: 280px;
+  background-size: cover;
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+.artist-masthead .artist-info {
+  position: relative;
+}
+.artist-masthead .avatar img {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+}
+
+/**
  * Gallery
  */
 .gallery {

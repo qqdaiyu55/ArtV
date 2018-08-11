@@ -63,7 +63,6 @@ class AddArtist extends React.Component {
         userInfoUrl = this.artstationArtistQuery.replace('username', this.state.searchTerm.user)
         axios.get(userInfoUrl)
           .then((resp) => {
-            console.log(resp)
             this.setState({
               searchResults: [{
                 type: 'artstation',
