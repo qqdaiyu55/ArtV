@@ -11,6 +11,7 @@ function setDispatch(dispatch) {
   _dispatch = dispatch
 }
 
+// Suitable case: function(params) {...your code; dispatch(...)}
 function dispatch(...args) {
   _dispatch(...args)
 }
@@ -19,6 +20,7 @@ function dispatch(...args) {
 // For these, `dispatcher(<args>)` is preferred because it memoizes the handler
 // function. This prevents React from updating the listener functions on
 // each update().
+// Suitable case: <div onClick={dispatcher(...)}></div>
 function dispatcher(...args) {
   const str = JSON.stringify(args)
   let handler = dispatchers[str]

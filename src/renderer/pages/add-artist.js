@@ -1,25 +1,38 @@
 const React = require('react')
 const axios = require('axios')
+const url = require('url')
 
-const { dispatcher } = require('../lib/dispatcher')
+const { dispatch, dispatcher } = require('../lib/dispatcher')
 
 class AddArtist extends React.Component {
   constructor () {
+    this.type = ['artstation', 'pixiv']
+    this.prefixURL = {
+      artstation: 'https://www.artstation.com/',
+      pixiv: 'https://www.pixiv.net/member.php?'
+    }
+    this.artstationArtistQuery = 'https://www.artstation.com/users/username/quick.json'
+
     this.state = {
-      searchTerm: 'https://www.artstation.com/users/kuvshinov_ilya',
+      error: '',
+      searchTerm: {
+        type: undefined,
+        user: ''
+      },
       searchResults: []
     }
 
     this.handleKeyUp = this.handleKeyUp.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.addArtistToSideBar = this.addArtistToSideBar.bind(this)
   }
 
   render () {
     let searchResults = this.state.searchResults
-    console.log(searchResults)
     searchResults = searchResults.map((v, i) => {
       return (
-        <div className='artist-info'>
-          <div className='avatar'>
+        <div className='artist-info' key={v.name}>
+          <div className='avatar' onClick={this.addArtistToSideBar}>
             <img src={v.avatarUrl} />
           </div>
           <h4 className='name'>{v.name}</h4>
@@ -45,25 +58,71 @@ class AddArtist extends React.Component {
 
   // Process the search
   handleKeyUp (e) {
-    if (e.key === 'Enter' && this.state.searchTerm !== '') {
-      axios.get('https://www.artstation.com/users/kuvshinov_ilya/quick.json')
-        .then((resp) => {
-          console.log(resp.data)
-          this.setState({
-            searchResults: [{
-              type: 'artstation',
-              name: resp.data.full_name,
-              avatarUrl: resp.data.medium_avatar_url,
-              username: resp.data.username
-            }]
+    if (e.key === 'Enter' && e.target.value != '' && this.state.error == '') {
+      if (this.state.searchTerm.type == 'artstation') {
+        userInfoUrl = this.artstationArtistQuery.replace('username', this.state.searchTerm.user)
+        axios.get(userInfoUrl)
+          .then((resp) => {
+            console.log(resp)
+            this.setState({
+              searchResults: [{
+                type: 'artstation',
+                name: resp.data.full_name,
+                avatarUrl: resp.data.medium_avatar_url,
+                username: resp.data.username,
+                userInfoUrl: userInfoUrl,
+                id: resp.data.id
+              }]
+            })
           })
-        })
+      }
     }
   }
 
   // Set the state when search term is changed
+  //  * Check if the input url is valid
+  //  * Judge the type: rss, artstation, pixiv
   handleChange (e) {
-    // this.setState({ searchTerm: e.target.value })
+    const parsedURL = url.parse(e.target.value)
+    let type = undefined, i
+
+    for (i = 0; i < this.type.length; i = i + 1) {
+      if (parsedURL.hostname && parsedURL.hostname.includes(this.type[i])) {
+        type = this.type[i]
+        break
+      }
+    }
+
+    if (type === undefined) {
+      this.setState({ error: 'invalid url' })
+    }
+
+    // Artstation support
+    if (type == 'artstation') {
+      if (parsedURL.href.includes(this.prefixURL['artstation'])) {
+        let username = parsedURL.pathname.replace('/', '')
+
+        this.setState({
+          error: '',
+          searchTerm: {
+            type: 'artstation',
+            user: username
+          }
+        })
+      } else {
+        this.setState({ error: 'invalid artstation url' })
+      }
+    }
+
+    // Pixiv support
+    if (type == 'pixiv') {
+
+    }
+  }
+
+  addArtistToSideBar() {
+    let data = this.state.searchResults[0]
+    dispatch('addArtist', data)
   }
 }
 

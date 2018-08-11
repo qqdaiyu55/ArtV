@@ -125,6 +125,7 @@ const dispatchHandlers = {
   // Everything else
   'openFolder': () => ipcRenderer.send('openFolder'),
   'onOpen': onOpen,
+  'addArtist': addArtist,
   'error': onError,
   'uncaughtError': (proc, err) => telemetry.logUncaughtError(proc, err),
   'stateSave': () => State.save(state),
@@ -187,12 +188,35 @@ function onOpen(selectedPath) {
   let folderPath = selectedPath[0]
   // Generate 16-char unique id
   let uuid = crypto.randomBytes(8).toString('hex')
+
   let newArtist = {
     key: uuid,
     title: path.basename(folderPath),
     type: 'local',
     path: folderPath
   }
+
+  state.saved.artistTree.push(newArtist)
+
+  dispatch('stateSave')
+}
+
+function addArtist(data) {
+  let newArtist
+  let uuid = crypto.randomBytes(8).toString('hex')
+
+  if (data.type == 'artstation') {
+    newArtist = {
+      key: uuid,
+      type: data.type,
+      title: data.name,
+      name: data.avatarUrl,
+      username: data.username,
+      userInfoUrl: data.userInfoUrl,
+      id: data.id
+    }
+  }
+
   state.saved.artistTree.push(newArtist)
 
   dispatch('stateSave')

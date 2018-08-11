@@ -14,6 +14,7 @@ class Gallery extends React.Component {
     this.size = 20
 
     this.state = {
+      type: undefined,
       thumbnailNum: 0,
       imageNum: -1,
       images: [],
@@ -80,6 +81,7 @@ class Gallery extends React.Component {
     this.init(artistId)
   }
 
+  // Fetch the data of artist and initialize given the artist key from artist tree
   init (artistId) {
     const loop = (data, key, callback) => {
       data.forEach((item, index, arr) => {
@@ -99,17 +101,23 @@ class Gallery extends React.Component {
       artistData = item
     })
 
-    const imgPath = artistData.path
-    const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
+    // Cases: local, artstation, pixiv
+    if (item.type == 'local') {
+      const imgPath = artistData.path
+      const thumbFolderPath = path.join(config.THUMBNAIL_PATH, artistId)
 
-    // Check if the thumbnail folder exists
-    if (!fs.existsSync(thumbFolderPath)) {
-      fs.mkdirSync(thumbFolderPath)
+      // Check if the thumbnail folder exists
+      if (!fs.existsSync(thumbFolderPath)) {
+        fs.mkdirSync(thumbFolderPath)
+      }
+
+      const mediaList = this.getMediaList(imgPath)
+
+      this.createThumbnail(mediaList, imgPath, thumbFolderPath)
     }
+    if (item.type == 'artstation') {
 
-    const mediaList = this.getMediaList(imgPath)
-
-    this.createThumbnail(mediaList, imgPath, thumbFolderPath)
+    }
   }
 
   getMediaList (dirPath) {
