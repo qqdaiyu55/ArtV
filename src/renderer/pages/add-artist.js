@@ -115,7 +115,9 @@ class AddArtist extends React.Component {
 
     // Pixiv support
     if (type == 'pixiv') {
-
+      if (parsedURL.href.includes(this.prefixURL['pixiv'])) {
+        
+      }
     }
   }
 

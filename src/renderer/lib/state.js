@@ -80,6 +80,7 @@ function setupStateSaved(cb) {
       {
         title: 'Favorite',
         key: 'favorite',
+        type: 'favorite',
         isLeaf: true
       }
     ]

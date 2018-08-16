@@ -10,10 +10,17 @@ class MediaList extends React.Component {
     let thumbnailList =  this.props.data
 
     thumbnailList = thumbnailList.map((v, i) => {
+      let artworkInfo = undefined
+
+      if (v.type == 'artstation') {
+        artworkInfo = <div className='title'><h4>{v.title}</h4></div>
+      }
+
       return (
         <div key={'thumbnail-'+i.toString()} className='artwork'>
           <div className='overlay'></div>
-          <img src={v} />
+          <img src={v.src} />
+          {artworkInfo}
         </div>
       )
     })

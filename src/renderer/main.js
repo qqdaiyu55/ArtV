@@ -126,6 +126,7 @@ const dispatchHandlers = {
   'openFolder': () => ipcRenderer.send('openFolder'),
   'onOpen': onOpen,
   'addArtist': addArtist,
+  'updateArtistTree': updateArtistTree,
   'error': onError,
   'uncaughtError': (proc, err) => telemetry.logUncaughtError(proc, err),
   'stateSave': () => State.save(state),
@@ -218,6 +219,12 @@ function addArtist(data) {
   }
 
   state.saved.artistTree.push(newArtist)
+
+  dispatch('stateSave')
+}
+
+function updateArtistTree(newTree) {
+  state.saved.artistTree = newTree
 
   dispatch('stateSave')
 }

@@ -67,15 +67,19 @@ class Gallery extends React.Component {
           : <h1>{this.state.thumbnailNum}</h1>
     }
     if (this.state.type == 'artstation') {
-      console.log('artstation', this.state.artistInfo)
       const data = this.state.artistInfo
 
       wrapper = 
         <div>
           <div className='artist-masthead' style={{backgroundImage: 'url('+data.coverUrl+')'}}>
+            <div className='overlay'></div>
             <div className='artist-info'>
               <div className='avatar'>
                 <img src={data.avatarUrl} />
+              </div>
+              <div className='text'>
+                <h1>{data.name}</h1>
+                <p>{data.headline}</p>
               </div>
             </div>
           </div>
@@ -232,7 +236,10 @@ class Gallery extends React.Component {
         let moreImages = this.state.images.slice(start, start + this.size)
 
         moreImages = moreImages.map((v) => {
-          return path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v))
+          return {
+            type: 'local',
+            src: path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v))
+          }
         })
 
         showedImages = showedImages.concat(moreImages)
@@ -244,18 +251,20 @@ class Gallery extends React.Component {
     }
 
     if (this.state.type == 'artstation') {
-      console.log('load artstation content')
       const artistProjectUrl = this.artstationProcjetUrl.replace('username', this.state.artistInfo.username) + '?page=' + this.state.page.toString()
 
       axios.get(artistProjectUrl)
         .then((resp) => {
-          console.log(artistProjectUrl, resp.data)
           if (resp.data.data.length != 0) {
             let showedImages = [...this.state.showedImages]
             let moreImages = resp.data.data
 
             moreImages = moreImages.map((v) => {
-              return v.cover.thumb_url
+              return {
+                type: 'artstation',
+                src: v.cover.thumb_url,
+                title: v.title
+              }
             })
 
             showedImages = showedImages.concat(moreImages)

@@ -3,6 +3,8 @@ const { withRouter } = require('react-router-dom')
 const Tree = require('rc-tree').default
 const { TreeNode } = require('rc-tree')
 
+const { dispatch } = require('../lib/dispatcher')
+
 const ContextMenu = require('./context-menu')
 
 class ArtistTree extends React.Component {
@@ -30,10 +32,14 @@ class ArtistTree extends React.Component {
   render () {
     const loop = (data) => {
       return data.map((item) => {
+        let cls
         if (item.children && item.children.length) {
-          return <TreeNode key={item.key} title={item.title} className='parent-node'>{loop(item.children)}</TreeNode>
+          cls = 'parent-node'
+          return <TreeNode key={item.key} title={item.title} className={cls}>{loop(item.children)}</TreeNode>
         }
-        return <TreeNode key={item.key} title={item.title} className='leaf-node' />
+
+        cls = item.type + ' leaf-node'
+        return <TreeNode key={item.key} title={item.title} className={cls} />
       })
     }
 
@@ -122,6 +128,8 @@ class ArtistTree extends React.Component {
     }
 
     this.setState({ gData: data })
+
+    dispatch('updateArtistTree', data)
   }
 
   collaspse (selectedKey, alwaysExpand=false) {
