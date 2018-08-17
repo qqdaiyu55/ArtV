@@ -34,6 +34,9 @@
 .rc-tree li.artstation:hover {
   background: rgba(0, 172, 241, .2);
 }
+.rc-tree li.rss:hover {
+
+}
 
 .rc-tree li .draggable {
   cursor: default;
@@ -63,6 +66,7 @@
 .rc-tree li span.rc-tree-switcher {
   display: none;
 }
+
 .rc-tree li span.rc-tree-iconEle {
   display: inline-block;
   margin-right: 8px;
@@ -87,6 +91,10 @@
 .rc-tree .artstation span.rc-tree-icon__docu {
   background-image: url('artstation.svg');
 }
+.rc-tree .rss span.rc-tree-icon__docu {
+  background-image: url('rss.svg');
+}
+
 .rc-tree-child-tree {
   display: none;
 }

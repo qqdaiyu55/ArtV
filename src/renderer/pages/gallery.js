@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const axios = require('axios')
 const sharp = require('sharp')
+const RSSParser = require('rss-parser')
 
 const config = require('../../config')
 const MediaList = require('../components/medialist')
@@ -60,12 +61,14 @@ class Gallery extends React.Component {
       </div>
     
     let wrapper
+
     if (this.state.type == 'local') {
       wrapper =
         this.state.thumbnailNum == this.state.imageNum
           ? MediaListWrapper
           : <h1>{this.state.thumbnailNum}</h1>
     }
+
     if (this.state.type == 'artstation') {
       const data = this.state.artistInfo
 
@@ -76,6 +79,27 @@ class Gallery extends React.Component {
             <div className='artist-info'>
               <div className='avatar'>
                 <img src={data.avatarUrl} />
+              </div>
+              <div className='text'>
+                <h1>{data.name}</h1>
+                <p>{data.headline}</p>
+              </div>
+            </div>
+          </div>
+          {MediaListWrapper}
+        </div>
+    }
+
+    if (this.state.type == 'rss') {
+      const data = this.state.artistInfo
+
+      wrapper =
+        <div>
+          <div className='artist-masthead' style={{ backgroundImage: 'url(' + 'https://cdn.artstation.com/static_media/placeholders/user/cover/default.jpg' + ')' }}>
+            <div className='overlay'></div>
+            <div className='artist-info'>
+              <div className='avatar'>
+              <img src='https://i0.wp.com/www.artstation.com/assets/default_avatar.jpg' />
               </div>
               <div className='text'>
                 <h1>{data.name}</h1>
@@ -161,6 +185,34 @@ class Gallery extends React.Component {
             }
           })
         })
+    }
+
+    if (artistData.type == 'rss') {
+      let parser = new RSSParser()
+      let elem = document.createElement("div")
+
+      parser.parseURL(artistData.feedUrl, (err, feed) => {
+        if (err) throw err
+        else {
+          let images = feed.items.map((v) => {
+            elem.innerHTML = v.content
+            let rssImages = elem.getElementsByTagName("img")
+            return {
+              type: 'rss',
+              src: rssImages[0].src,
+              title: v.title
+            }
+          })
+          this.setState({
+            hasMoreItems: true,
+            artistInfo: {
+              name: feed.title,
+              headline: feed.description
+            },
+            showedImages: images
+          })
+        }
+      })
     }
   }
 
@@ -277,6 +329,10 @@ class Gallery extends React.Component {
             this.setState({ hasMoreItems: false })
           }
         })
+    }
+
+    if (this.state.type == 'rss') {
+      this.setState({ hasMoreItems: false })
     }
   }
 }

@@ -16,6 +16,10 @@ class MediaList extends React.Component {
         artworkInfo = <div className='title'><h4>{v.title}</h4></div>
       }
 
+      if (v.type == 'rss') {
+        artworkInfo = <div className='title'><h4>{v.title}</h4></div>
+      }
+
       return (
         <div key={'thumbnail-'+i.toString()} className='artwork'>
           <div className='overlay'></div>

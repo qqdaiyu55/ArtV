@@ -1,6 +1,7 @@
 const React = require('react')
 const axios = require('axios')
 const url = require('url')
+const RSSParser = require('rss-parser')
 
 const { dispatch, dispatcher } = require('../lib/dispatcher')
 
@@ -75,6 +76,28 @@ class AddArtist extends React.Component {
             })
           })
       }
+
+      // Unidentified url:
+      //  Rss feed or invalid url
+      if (this.state.searchTerm.type == undefined) {
+        // Check if a valid rss feed
+        let parser = new RSSParser()
+        let url = e.target.value
+
+        parser.parseURL(url, (err, feed) => {
+          if (err) this.setState({ error: 'invalid url' })
+          else if (feed.title) {
+            this.setState({
+              searchResults: [{
+                type: 'rss',
+                avatarUrl: 'https://i0.wp.com/www.artstation.com/assets/default_avatar.jpg',
+                name: feed.title,
+                feedUrl: url
+              }]
+            })
+          }
+        })
+      }
     }
   }
 
@@ -90,10 +113,6 @@ class AddArtist extends React.Component {
         type = this.type[i]
         break
       }
-    }
-
-    if (type === undefined) {
-      this.setState({ error: 'invalid url' })
     }
 
     // Artstation support

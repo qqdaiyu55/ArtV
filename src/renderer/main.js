@@ -51,7 +51,7 @@ function onState(err, _state) {
 
   // Create controllers
   controllers = {
-    
+
   }
 
   // Initialize ReactDOM
@@ -90,14 +90,14 @@ function delayedInit() {
 // 2. event - might be a click or other DOM event, or something external
 // 3. dispatch - the event handler calls dispatch(), main.js sends it to a controller
 // 4. controller - the controller handles the event, changing the state object
-function update () {
+function update() {
   app.setState(state)
   updateElectron()
 }
 
 // Some state changes can't be reflected in the DOM, instead we have to
 // tell the main process to update the window or OS integrations
-function updateElectron () {
+function updateElectron() {
 
 }
 
@@ -211,10 +211,18 @@ function addArtist(data) {
       key: uuid,
       type: data.type,
       title: data.name,
-      name: data.avatarUrl,
       username: data.username,
       userInfoUrl: data.userInfoUrl,
       id: data.id
+    }
+  }
+
+  if (data.type == 'rss') {
+    newArtist = {
+      key: uuid,
+      type: data.type,
+      title: data.name,
+      feedUrl: data.feedUrl
     }
   }
 
