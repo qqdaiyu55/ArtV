@@ -197,7 +197,8 @@ class Gallery extends React.Component {
           let images = feed.items.map((v) => {
             elem.innerHTML = v.content
             let rssImages = elem.getElementsByTagName("img")
-            return {
+
+            if (rssImages && rssImages[0].src != undefined) return {
               type: 'rss',
               src: rssImages[0].src,
               title: v.title
@@ -290,7 +291,9 @@ class Gallery extends React.Component {
         moreImages = moreImages.map((v) => {
           return {
             type: 'local',
-            src: path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v))
+            src: path.join(thumbFolderPath, path.parse(v).name + '_thumb' + path.extname(v)),
+            orignalSrc: v,
+            title: path.parse(v).name
           }
         })
 
@@ -315,7 +318,8 @@ class Gallery extends React.Component {
               return {
                 type: 'artstation',
                 src: v.cover.thumb_url,
-                title: v.title
+                title: v.title,
+                hashId: v.hash_id
               }
             })
 

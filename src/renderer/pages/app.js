@@ -66,7 +66,6 @@ class App extends React.Component {
             </Switch>
           </HashRouter>
         </div>
-        {/* {this.getModal()} */}
       </div>
     )
   }
